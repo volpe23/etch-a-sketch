@@ -1,18 +1,45 @@
 // Container where to store in divs
 const container = document.querySelector(".container");
 
+// Variable which determines what drawing mode is on
+let drawMode = 'draw';
+let drawColor = 'black';
+
+// Color input
+const colorPicker = document.querySelector(".color-picker");
+colorPicker.addEventListener('change', () => drawColor = colorPicker.value);
+
+// Color mode button
+const colorModeButton = document.querySelector('#colorButton');
+colorModeButton.addEventListener('click', () => drawMode = 'draw');
+
+// Light brush mode and button
+const lightBrushMode = document.querySelector('#lightBrush');
+lightBrushMode.addEventListener('click', () => drawMode = 'light')
 // Trigger button to trigger grid function
 const trigger = document.querySelector("#prompt");
 trigger.addEventListener('click' , () => createDrawingGrid());
+
+// Rainbox button to generate random color when drawing
+const randomButton = document.querySelector("#randomButton");
+randomButton.addEventListener('click', () => {
+    drawMode = 'random'
+    // randomButton.focus()
+    // randomButton.setAttribute('active', true)
+});
+
 // Clear button
 const clearButton = document.querySelector("#clear");
-clearButton.addEventListener('click', () => clear())
+clearButton.addEventListener('click', () => {
+    clear()
+    clearButton.setAttribute('active', true);
+});
 
 // Creating divs based on input
 function createDrawingGrid() {
     container.innerHTML = "";
     const input = +(prompt("How many divs?"));
-    if (input > 128) return alert("Too many!")
+    if (input > 128) return alert("Too many!");
     // Set grid rows and columns equal to input value
     container.style.gridTemplateColumns = `repeat(${input}, 1fr)`;
     container.style.gridTemplateRows = `repeat(${input}, 1fr)`;
@@ -23,12 +50,21 @@ function createDrawingGrid() {
     for (let i = 0; i < input * input; i++) {
         const element = document.createElement('div');
         container.appendChild(element);
-        element.classList.add('element')
+        element.classList.add('element');
         changeColor(element);
     }
     
 }
-
+function getMode() {
+    // console.log("Hello");
+    if (drawMode === 'random') return `rgb(${getRandomRGB()}, ${getRandomRGB()}, ${getRandomRGB()})`;
+    else if (drawMode === 'draw') return drawColor;
+}
+function getRandomRGB() {
+    const random = Math.floor((Math.random() * 255))
+    // return `rgb(${Math.floor((Math.random() * 255))}, ${Math.floor((Math.random() * 255))}, ${Math.floor((Math.random() * 255))})`
+    return Math.floor((Math.random() * 255))
+}
 function clear() {
     // Get all the elements
     const allElements = document.querySelectorAll('.element');
@@ -45,15 +81,15 @@ document.addEventListener('mousedown', () => {
 });
 document.addEventListener('mouseup', () => {
     mouseDown = false;
-})
+});
 // Adding event listeners to grid elements
 function changeColor(el) {
     // Event listener to draw and drag when mouse is pressed
     el.addEventListener('mouseover', () => {
 
-        mouseDown ? el.style.backgroundColor = 'black' : false;
+        mouseDown ? el.style.backgroundColor = getMode() : false;
 
     });
     // Event listener to color in on click
-    el.addEventListener('click', () => el.style.backgroundColor = 'black')
+    el.addEventListener('click', () => el.style.backgroundColor = getMode());
 }
