@@ -39,7 +39,7 @@ clearButton.addEventListener('click', () => {
 function createDrawingGrid() {
     container.innerHTML = "";
     const input = +(prompt("How many divs?"));
-    if (input > 128) return alert("Too many!");
+    if (input > 100) return alert("Too many!");
     // Set grid rows and columns equal to input value
     container.style.gridTemplateColumns = `repeat(${input}, 1fr)`;
     container.style.gridTemplateRows = `repeat(${input}, 1fr)`;
@@ -55,15 +55,27 @@ function createDrawingGrid() {
     }
     
 }
-function getMode() {
+function getMode(el) {
     // console.log("Hello");
     if (drawMode === 'random') return `rgb(${getRandomRGB()}, ${getRandomRGB()}, ${getRandomRGB()})`;
     else if (drawMode === 'draw') return drawColor;
+    else if (drawMode === 'light') return lightMode(el)
 }
 function getRandomRGB() {
     const random = Math.floor((Math.random() * 255))
     // return `rgb(${Math.floor((Math.random() * 255))}, ${Math.floor((Math.random() * 255))}, ${Math.floor((Math.random() * 255))})`
     return Math.floor((Math.random() * 255))
+}
+
+// Light mode coloring function
+function lightMode(el) {
+    let bgColor = window.getComputedStyle(el).backgroundColor;
+    const regex = /\d+/g;
+    const arr = bgColor.match(regex);
+    const average = arr.reduce((acc, curr) => +acc + +curr) / 3;
+    const newVal = Math.floor(average - ((255 / 10) + 3));
+    return `rgb(${newVal}, ${newVal}, ${newVal})`
+    // console.log(bgColor);
 }
 function clear() {
     // Get all the elements
@@ -87,9 +99,9 @@ function changeColor(el) {
     // Event listener to draw and drag when mouse is pressed
     el.addEventListener('mouseover', () => {
 
-        mouseDown ? el.style.backgroundColor = getMode() : false;
+        mouseDown ? el.style.backgroundColor = getMode(el) : false;
 
     });
     // Event listener to color in on click
-    el.addEventListener('click', () => el.style.backgroundColor = getMode());
+    el.addEventListener('click', () => el.style.backgroundColor = getMode(el));
 }

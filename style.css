@@ -61,5 +61,5 @@
 .element {
     user-select: none;
     display: inline-block;
-    /* background-color: white; */
+    background-color: white;
 }
