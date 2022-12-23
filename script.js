@@ -36,9 +36,9 @@ clearButton.addEventListener('click', () => {
 });
 
 // Creating divs based on input
-function createDrawingGrid() {
+function createDrawingGrid(input) {
     container.innerHTML = "";
-    const input = +(prompt("How many divs?"));
+    // const input = +(prompt("How many divs?"));
     if (input > 100) return alert("Too many!");
     // Set grid rows and columns equal to input value
     container.style.gridTemplateColumns = `repeat(${input}, 1fr)`;
@@ -105,3 +105,25 @@ function changeColor(el) {
     // Event listener to color in on click
     el.addEventListener('click', () => el.style.backgroundColor = getMode(el));
 }
+
+
+
+// Slider functions
+const sizeSlider = document.querySelector("#sizeSlider");
+const sizeNumber = document.querySelector("#sizeNumber");
+// sizeNumber.value = sizeSlider.value
+
+sizeSlider.addEventListener('input', () => {
+    const max = sizeSlider.max;
+    const min = sizeSlider.min;
+    const value = sizeSlider.value;
+
+    sizeNumber.value = value;
+    sizeSlider.style.backgroundSize = `${value}% 100%`;
+    // createDrawingGrid(value);
+});
+sizeSlider.addEventListener('change', () => {
+    const value = sizeSlider.value;
+    createDrawingGrid(value);
+})
+createDrawingGrid(30)

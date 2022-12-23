@@ -12,7 +12,12 @@
         <div class="title">Etch-a-Sketch</div>
         <div class="board">
             <div class="menu">
-
+                <label for="sizeSlider">Canvas size</label>
+                <div>
+                    
+                    <input type="range" id="sizeSlider" min="0" max="100" value="30" class="slider">
+                    <input type="number" id="sizeNumber" value="30" class="slider-number">
+                </div>
                 <button type="button" id="prompt" class="btn">Click</button>
                 <input type="color" class="color-picker">
                 <button type="button" id="colorButton" class="btn">Color</button>
