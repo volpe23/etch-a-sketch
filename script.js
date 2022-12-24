@@ -23,17 +23,12 @@ lightBrushMode.addEventListener('click', () => {
     drawMode = 'light';
     setActiveButton(lightBrushMode);
 })
-// Trigger button to trigger grid function
-// const trigger = document.querySelector("#prompt");
-// trigger.addEventListener('click' , () => createDrawingGrid());
 
-// Rainbox button to generate random color when drawing
+// Rainbow button to generate random color when drawing
 const randomButton = document.querySelector("#randomButton");
 randomButton.addEventListener('click', () => {
     drawMode = 'random';
     setActiveButton(randomButton);
-    // randomButton.focus()
-    // randomButton.setAttribute('active', true)
 });
 // Eraser button
 const eraser = document.querySelector('#eraserButton');
@@ -52,13 +47,11 @@ let drawColor = colorPicker.value;
 // Creating divs based on input
 function createDrawingGrid(input) {
     container.innerHTML = "";
-    // const input = +(prompt("How many divs?"));
     if (input > 100) return alert("Too many!");
     // Set grid rows and columns equal to input value
     container.style.gridTemplateColumns = `repeat(${input}, 1fr)`;
     container.style.gridTemplateRows = `repeat(${input}, 1fr)`;
     
-    // 
     
     // Create divs into the contaier
     for (let i = 0; i < input * input; i++) {
@@ -77,8 +70,6 @@ function getMode(el) {
     else if (drawMode === 'eraser') return eraserMode(el);
 }
 function getRandomRGB() {
-    const random = Math.floor((Math.random() * 255))
-    // return `rgb(${Math.floor((Math.random() * 255))}, ${Math.floor((Math.random() * 255))}, ${Math.floor((Math.random() * 255))})`
     return Math.floor((Math.random() * 255))
 }
 
@@ -158,15 +149,21 @@ strSlider.addEventListener('change', () => {
     const value = strSlider.value;
     lightBrushStroke = value
 })
-
+// Function to add .active class to menu items
 function setActiveButton(btn) {
+
+    // Shows color picker when color mode is on
     if (btn.id === 'colorButton') colorPicker.style.display = 'block';
     else colorPicker.style.display = 'none';
+
+    // Shows stroke slider when light brush mode is on
     if (btn.id === 'lightBrush') document.querySelector('#lightBrushSlider').style.display = 'block';
     else document.querySelector('#lightBrushSlider').style.display = 'none';
-    const currBtn = document.querySelector('.active');
-    currBtn.classList.remove('active');
-    btn.classList.add('active');
+
+    const currBtn = document.querySelector('.active'); 
+    currBtn.classList.remove('active'); //  Removes .active class from currently acive button
+    btn.classList.add('active');    // Gives input element an .active class
 }
+
 setActiveButton(colorModeButton);
 createDrawingGrid(30);
