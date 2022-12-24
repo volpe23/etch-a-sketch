@@ -3,7 +3,7 @@ const container = document.querySelector(".container");
 
 // Variable which determines what drawing mode is on
 let drawMode = 'draw';
-let drawColor = 'black';
+
 
 // Color input
 const colorPicker = document.querySelector(".color-picker");
@@ -11,30 +11,44 @@ colorPicker.addEventListener('change', () => drawColor = colorPicker.value);
 
 // Color mode button
 const colorModeButton = document.querySelector('#colorButton');
-colorModeButton.addEventListener('click', () => drawMode = 'draw');
+colorModeButton.addEventListener('click', () => {
+    drawMode = 'draw';
+    // colorModeButton.active = true;
+    setActiveButton(colorModeButton);
+});
 
 // Light brush mode and button
 const lightBrushMode = document.querySelector('#lightBrush');
-lightBrushMode.addEventListener('click', () => drawMode = 'light')
+lightBrushMode.addEventListener('click', () => {
+    drawMode = 'light';
+    setActiveButton(lightBrushMode);
+})
 // Trigger button to trigger grid function
-const trigger = document.querySelector("#prompt");
-trigger.addEventListener('click' , () => createDrawingGrid());
+// const trigger = document.querySelector("#prompt");
+// trigger.addEventListener('click' , () => createDrawingGrid());
 
 // Rainbox button to generate random color when drawing
 const randomButton = document.querySelector("#randomButton");
 randomButton.addEventListener('click', () => {
-    drawMode = 'random'
+    drawMode = 'random';
+    setActiveButton(randomButton);
     // randomButton.focus()
     // randomButton.setAttribute('active', true)
 });
+// Eraser button
+const eraser = document.querySelector('#eraserButton');
+eraser.addEventListener('click', () => {
+    drawMode = 'eraser';
+    setActiveButton(eraser);
+})
 
 // Clear button
 const clearButton = document.querySelector("#clear");
 clearButton.addEventListener('click', () => {
     clear()
-    clearButton.setAttribute('active', true);
 });
-
+// Drawing color
+let drawColor = colorPicker.value;
 // Creating divs based on input
 function createDrawingGrid(input) {
     container.innerHTML = "";
@@ -59,7 +73,8 @@ function getMode(el) {
     // console.log("Hello");
     if (drawMode === 'random') return `rgb(${getRandomRGB()}, ${getRandomRGB()}, ${getRandomRGB()})`;
     else if (drawMode === 'draw') return drawColor;
-    else if (drawMode === 'light') return lightMode(el)
+    else if (drawMode === 'light') return lightMode(el, lightBrushStroke);
+    else if (drawMode === 'eraser') return eraserMode(el);
 }
 function getRandomRGB() {
     const random = Math.floor((Math.random() * 255))
@@ -68,15 +83,21 @@ function getRandomRGB() {
 }
 
 // Light mode coloring function
-function lightMode(el) {
+let lightBrushStroke = 3;
+function lightMode(el, stroke) {
     let bgColor = window.getComputedStyle(el).backgroundColor;
     const regex = /\d+/g;
     const arr = bgColor.match(regex);
     const average = arr.reduce((acc, curr) => +acc + +curr) / 3;
-    const newVal = Math.floor(average - ((255 / 10) + 3));
-    return `rgb(${newVal}, ${newVal}, ${newVal})`
-    // console.log(bgColor);
+    const newVal = Math.floor(average - (((stroke / 255) * 1000) + 3));
+    return `rgb(${newVal}, ${newVal}, ${newVal})`;
 }
+// Function for eraser mode
+function eraserMode(el) {
+    el.removeAttribute('style');
+}
+
+// Function to clear everythin from canvas
 function clear() {
     // Get all the elements
     const allElements = document.querySelectorAll('.element');
@@ -108,22 +129,44 @@ function changeColor(el) {
 
 
 
-// Slider functions
+// Slider functions for canvas size
 const sizeSlider = document.querySelector("#sizeSlider");
 const sizeNumber = document.querySelector("#sizeNumber");
-// sizeNumber.value = sizeSlider.value
 
 sizeSlider.addEventListener('input', () => {
-    const max = sizeSlider.max;
-    const min = sizeSlider.min;
     const value = sizeSlider.value;
 
     sizeNumber.value = value;
     sizeSlider.style.backgroundSize = `${value}% 100%`;
-    // createDrawingGrid(value);
 });
 sizeSlider.addEventListener('change', () => {
     const value = sizeSlider.value;
     createDrawingGrid(value);
 })
-createDrawingGrid(30)
+
+// Slider functions for light brush
+const strSlider = document.querySelector('#strSlider');
+const strNumber = document.querySelector('#strNumber');
+
+strSlider.addEventListener('input', () => {
+    const value = strSlider.value;
+
+    strNumber.value = value;
+    strSlider.style.backgroundSize = `${value*10}% 100%`;
+});
+strSlider.addEventListener('change', () => {
+    const value = strSlider.value;
+    lightBrushStroke = value
+})
+
+function setActiveButton(btn) {
+    if (btn.id === 'colorButton') colorPicker.style.display = 'block';
+    else colorPicker.style.display = 'none';
+    if (btn.id === 'lightBrush') document.querySelector('#lightBrushSlider').style.display = 'block';
+    else document.querySelector('#lightBrushSlider').style.display = 'none';
+    const currBtn = document.querySelector('.active');
+    currBtn.classList.remove('active');
+    btn.classList.add('active');
+}
+setActiveButton(colorModeButton);
+createDrawingGrid(30);
